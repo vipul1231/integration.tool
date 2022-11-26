@@ -21,7 +21,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class);
-		Collection<String> collection = ctx.getBean(EchoFlow.Upcase.class).upcase(List.of("hello my name is vipul"));
+		Collection<String> collection = ctx.getBean(EchoFlow.Upcase.class).upcase(List.of("hello my name is vipul","My name is jay"));
 		System.out.println(collection);
 	}
 

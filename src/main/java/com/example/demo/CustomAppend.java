@@ -9,7 +9,7 @@ public class CustomAppend {
     }
 
     public String app(String name) {
-        System.out.println("Append Called");
+        System.out.println("Append Called :"+name);
         return name+" append";
     }
 }

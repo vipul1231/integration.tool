@@ -36,7 +36,7 @@ public class EchoFlow {
 
     @Bean
     public IntegrationFlow append() {
-        return IntegrationFlow.from("append.input").handle("apr","app").get();
+        return IntegrationFlow.from("append.input").split().handle("apr","app").aggregate().get();
     }
 
 }
