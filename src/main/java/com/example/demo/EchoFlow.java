@@ -5,10 +5,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
+import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.MessageChannels;
+import org.springframework.integration.dsl.Pollers;
+import org.springframework.messaging.MessageChannel;
 
+import java.time.Duration;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class EchoFlow {
@@ -28,6 +34,13 @@ public class EchoFlow {
 
         @Gateway(requestChannel = "subflow.input")
         Collection<String> subFlow(Collection<Integer> integers);
+    }
+
+    @MessagingGateway
+    public interface TestBridge {
+
+        @Gateway(requestChannel = "bridge.input")
+        Collection<String> bridge(Collection<String> inputs);
     }
 
     @Bean
@@ -68,4 +81,22 @@ public class EchoFlow {
         return f -> f.handle(m -> System.out.println("even"));
     }
 
+    @Bean
+    public IntegrationFlow bridge() {
+        System.out.println("BRIDGE");
+        return f -> f.split().<String, String>transform(String::toUpperCase)
+                .aggregate().channel("connect");
+    }
+
+    @Bean
+    public IntegrationFlow connectBdg() {
+        return IntegrationFlow.from("connect")
+                .bridge(e -> e.poller(Pollers.fixedRate(2000)))
+                .handle(i -> System.out.println(i.getPayload())).get();
+    }
+
+    @Bean
+    public MessageChannel connect() {
+        return MessageChannels.queue().get();
+    }
 }

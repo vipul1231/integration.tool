@@ -23,10 +23,15 @@ public class Application {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class);
+
 		Collection<String> collection = ctx.getBean(EchoFlow.Upcase.class).upcase(List.of("hello my name is vipul","My name is jay"));
 		System.out.println(collection);
-		Collection<String> collection1 = ctx.getBean(EchoFlow.SubFlow.class).subFlow(List.of(4,5));
-		System.out.println("Output: "+collection1);
+
+//		Collection<String> collection1 = ctx.getBean(EchoFlow.SubFlow.class).subFlow(List.of(4,5));
+//		System.out.println(collection1);
+
+		Collection<String> collection2 = ctx.getBean(EchoFlow.TestBridge.class).bridge(List.of("Test this bridge"));
+		System.out.println(collection2);
 	}
 
 	@Bean
