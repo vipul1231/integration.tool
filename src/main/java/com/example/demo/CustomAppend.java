@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 public class CustomAppend {
 
     public CustomAppend() {
-        System.out.printf("CUSTOM APPEND");
+        System.out.println("CUSTOM APPEND");
     }
 
     public String app(String name) {

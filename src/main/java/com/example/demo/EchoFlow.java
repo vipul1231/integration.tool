@@ -10,7 +10,6 @@ import org.springframework.integration.dsl.IntegrationFlow;
 
 import java.util.Collection;
 
-@EnableIntegration
 @Configuration
 public class EchoFlow {
 
@@ -22,7 +21,13 @@ public class EchoFlow {
 
         @Gateway(requestChannel = "upcase.input")
         Collection<String> upcase(Collection<String> strings);
+    }
 
+    @MessagingGateway
+    public interface SubFlow {
+
+        @Gateway(requestChannel = "subflow.input")
+        Collection<String> subFlow(Collection<Integer> integers);
     }
 
     @Bean
@@ -37,6 +42,30 @@ public class EchoFlow {
     @Bean
     public IntegrationFlow append() {
         return IntegrationFlow.from("append.input").split().handle("apr","app").aggregate().get();
+    }
+
+    @Bean
+    public IntegrationFlow subflow() {
+        System.out.println("Starting subflow....");
+        return f -> f
+                .split()
+                .<Integer, Boolean>route(o -> o % 2 == 0,
+                        m -> m
+                                .subFlowMapping(true, oddFlow())
+                                .subFlowMapping(false, sf -> sf.gateway(evenFlow())))
+                .aggregate();
+    }
+
+    @Bean
+    public IntegrationFlow oddFlow() {
+        System.out.println("ODD FLOW CALLED");
+        return f -> f.handle(m -> System.out.println("odd"));
+    }
+
+    @Bean
+    public IntegrationFlow evenFlow() {
+        System.out.println("EVEN FLOW CALLED");
+        return f -> f.handle(m -> System.out.println("even"));
     }
 
 }
