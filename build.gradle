@@ -25,6 +25,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.integration:spring-integration-test'
 	implementation group: 'org.springframework.integration', name: 'spring-integration-core', version: '6.0.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
 }
 
 tasks.named('test') {
